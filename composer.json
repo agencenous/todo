@@ -1,0 +1,18 @@
+{
+    "name": "agencenous/todo",
+    "description": "CLI utility to check TODOs comments in projects",
+    "type": "project",
+    "license": "GPL-3.0",
+    "version": "1.0.0",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Bastien Ho",
+            "role": "lead"
+        }
+    ],
+    "bin": [
+        "bin/todo"
+    ],
+    "require": {}
+}

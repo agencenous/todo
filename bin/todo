@@ -1,0 +1,112 @@
+#!/usr/bin/env php
+<?php
+
+// Help
+if (!empty($argv[1]) && $argv[1] == "-h") {
+  echo "";
+  echo "  todo [--format / -f formats] [--exclude-dirs / -e excluded_directories]\n\n";
+  echo "  Show «todo» comments in the code\n";
+  echo "  Formats: php, js, jsx, css, scss (separated by commas, no spaces)\n";
+  echo "  Excluded directories: separated by commas, no spaces\n";
+  echo "\n";
+  echo "-h: Show this help\n";
+  exit(0);
+}
+
+
+define('HERE', getcwd());
+global $count;
+global $formats;
+global $excluded_directories;
+
+$count = 0;
+
+// Default settings
+$formats = array(
+    'php',
+    'js',
+    'jsx',
+    'css',
+    'scss',
+);
+$excluded_directories = array(
+    'vendor',
+    'node_modules',
+    'cache',
+    '.git',
+);
+
+// Get settings from arguments
+for ($i = 0; $i < $argc; $i++) {
+    if ($argv[$i] == '--format' || $argv[$i] == '-f') {
+        if (isset($argv[$i + 1])) {
+            $requested_formats = explode(',', $argv[$i + 1]);
+            foreach ($requested_formats as $format) {
+                if (!in_array($format, $formats)) {
+                    echo "Invalid file format: $format\n";
+                    exit(1);
+                }
+            }
+            $formats = $requested_formats;
+            $i++;
+        } else {
+            echo "Missing argument for --format option\n";
+            exit(1);
+        }
+    } elseif ($argv[$i] == '--exclude-dirs' || $argv[$i] == '-e') {
+        if (isset($argv[$i + 1])) {
+            $excluded_directories = explode(',', $argv[$i + 1]);
+            $i++;
+        } else {
+            echo "Missing argument for --exclude-dirs option\n";
+            exit(1);
+        }
+    }
+}
+
+// Loop through all specified file formats not in excluded directories and replace the version with the new version
+function checkTodoInFiles($directory) {
+    global $count;
+    global $formats;
+    global $excluded_directories;
+    $files = scandir($directory);
+    foreach ($files as $file) {
+        $fullPath = $directory . '/' . $file;
+        $relativePath = str_replace(HERE.'/', '', $fullPath);
+        if ($file === '.' || $file === '..') {
+            continue;
+        }
+        if (is_dir($fullPath)) {
+            if (!in_array($relativePath, $excluded_directories)) {
+                checkTodoInFiles($fullPath);
+            }
+        } elseif (is_file($fullPath)) {
+            $file_extension = pathinfo($file, PATHINFO_EXTENSION);
+            $relativeDir = dirname($relativePath);
+            if (in_array($file_extension, $formats) && !in_array($relativeDir, $excluded_directories)) {
+                $file_contents = file_get_contents($fullPath);
+                $lines = explode("\n", $file_contents);
+                $line=0;
+                $found=[];
+                foreach ($lines as $lineContent) {
+                    $line++;
+                    $matches = [];
+                    if (preg_match('/(TODO|Todo|todo)\:?(.*)/', $lineContent, $matches)) {
+                        $relativePath = str_replace(HERE, '.', $fullPath);
+                        $comment = trim($matches[2]);
+                        $found[] = "- Line \033[0;34m{$line}\033[0m: \033[0;33m\"{$comment}\"\033[0m";
+                        $count++;
+                    }
+                }
+                if (!empty($found)) {
+                    echo "\033[0;34m{$relativePath}\033[0m\n".implode("\n", $found);
+                }
+            }
+        }
+    }
+}
+checkTodoInFiles(getcwd());
+$color = $count > 0 ? "\033[38;5;15m\033[48;5;160m" : "\033[38;5;15m\033[48;5;2m";
+echo "\n\n{$color} Found {$count} TODOs \033[0m\n";
+exit($count > 0 ? 1 : 0);
+

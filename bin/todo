@@ -113,7 +113,7 @@ function checkTodoInFiles($directory) {
                 foreach ($lines as $lineContent) {
                     $line++;
                     $matches = [];
-                    if (preg_match('/(TODO|Todo|todo)\:?(.*)/', $lineContent, $matches)) {
+                    if (preg_match('/(TODO|Todo|todo)\:(.*)/', $lineContent, $matches)) {
                         $relativePath = str_replace(HERE, '.', $fullPath);
                         $comment = trim($matches[2]);
                         $found[] = "- Line \033[0;34m{$line}\033[0m: \033[0;33m\"{$comment}\"\033[0m";

@@ -14,7 +14,7 @@ composer require --dev agencenous/todo
 vendor/bin/todo
 ```
 
-By default, the command will search for `TODO` comments in the current directory and its subdirectories in files with format: php, js, css, scss, jsx.
+By default, the command will search for `TODO:` comments in the current directory and its subdirectories in files with format: php, js, css, scss, jsx.
 
 Some directories are excluded by default: `vendor`, `node_modules`, `cache`, `.git`.
 

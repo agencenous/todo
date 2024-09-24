@@ -2,7 +2,7 @@
 <?php
 
 // Help
-if (!empty($argv[1]) && $argv[1] == "-h") {
+if (!empty($argv[1]) && ($argv[1] == "-h" || $argv[1] == "--help")) {
   echo "";
   echo "  todo [--format / -f formats] [--exclude-dirs / -e excluded_directories]\n\n";
   echo "  Show «todo» comments in the code\n";

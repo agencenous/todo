@@ -86,7 +86,7 @@ for ($i = 0; $i < $argc; $i++) {
     }
 }
 
-// Loop through all specified file formats not in excluded directories and replace the version with the new version
+// Loop through all specified file formats not in excluded directories
 function checkTodoInFiles($directory) {
     global $count;
     global $formats;

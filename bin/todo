@@ -121,7 +121,7 @@ function checkTodoInFiles($directory) {
                     }
                 }
                 if (!empty($found)) {
-                    echo "\033[0;34m{$relativePath}\033[0m\n".implode("\n", $found);
+                    echo "\n\033[0;34m{$relativePath}\033[0m\n".implode("\n", $found);
                 }
             }
         }

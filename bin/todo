@@ -10,6 +10,15 @@ if (!empty($argv[1]) && ($argv[1] == "-h" || $argv[1] == "--help")) {
   echo "  Excluded directories: separated by commas, no spaces\n";
   echo "\n";
   echo "-h: Show this help\n";
+  echo "\n";
+  echo "Use a configuration file:\n";
+  echo "  Create a .todo.json file in the root of your project with the following content:\n";
+  echo "  {\n";
+  echo "    \"formats\": [\"php\", \"js\", \"jsx\", \"css\", \"scss\"],\n";
+  echo "    \"exclude-dirs\": [\"vendor\", \"node_modules\", \"cache\", \".git\"]\n";
+  echo "  }\n";
+  echo "\n";
+
   exit(0);
 }
 
@@ -35,6 +44,19 @@ $excluded_directories = array(
     'cache',
     '.git',
 );
+
+// Get settings from configuration file
+$maybe_conf_file = getcwd() . '/.todo.json';
+if(file_exists($maybe_conf_file)) {
+    $conf = json_decode(file_get_contents($maybe_conf_file), true);
+    if(isset($conf['formats'])) {
+        $formats = $conf['formats'];
+    }
+    if(isset($conf['exclude-dirs'])) {
+        $excluded_directories = $conf['exclude-dirs'];
+    }
+    echo "Using configuration from .todo.json\n";
+}
 
 // Get settings from arguments
 for ($i = 0; $i < $argc; $i++) {

@@ -46,7 +46,7 @@ $excluded_directories = array(
 );
 
 // Get settings from configuration file
-$maybe_conf_file = getcwd() . '/.todo.json';
+$maybe_conf_file = HERE . '/.todo.json';
 if(file_exists($maybe_conf_file)) {
     $conf = json_decode(file_get_contents($maybe_conf_file), true);
     if(isset($conf['formats'])) {
@@ -127,7 +127,7 @@ function checkTodoInFiles($directory) {
         }
     }
 }
-checkTodoInFiles(getcwd());
+checkTodoInFiles(HERE);
 $color = $count > 0 ? "\033[38;5;15m\033[48;5;160m" : "\033[38;5;15m\033[48;5;2m";
 echo "\n\n{$color} Found {$count} TODOs \033[0m\n";
 exit($count > 0 ? 1 : 0);

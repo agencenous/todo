@@ -105,7 +105,7 @@ function checkTodoInFiles($directory) {
         } elseif (is_file($fullPath)) {
             $file_extension = pathinfo($file, PATHINFO_EXTENSION);
             $relativeDir = dirname($relativePath);
-            if (in_array($file_extension, $formats) && !in_array($relativeDir, $excluded_directories)) {
+            if (in_array($file_extension, $formats) && !in_array($relativeDir, $excluded_directories) && strpos($file, 'lock') === false) {
                 $file_contents = file_get_contents($fullPath);
                 $lines = explode("\n", $file_contents);
                 $line=0;
